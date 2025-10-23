@@ -1,7 +1,12 @@
 import { Elysia } from "elysia";
+import { authController } from "./features/auth";
+import openapi, { fromTypes } from "@elysiajs/openapi";
+import { userController } from "./features/user";
+import { rankingController } from "./features/ranking";
 
-const app = new Elysia().get("/", () => "Hello Elysia").listen(3000);
-
-console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-);
+const app = new Elysia()
+  .use(openapi())
+  .use(userController)
+  .use(authController)
+  .use(rankingController)
+  .listen(3000);
