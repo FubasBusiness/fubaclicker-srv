@@ -25,7 +25,10 @@ export const auth = new Elysia({ name: "auth.macros" })
       if (!auth) {
         set.status = 401;
         set.headers["www-authenticate"] = 'Bearer realm="api"';
-        return { error: "Unauthorized" };
+        return {
+          error: "Unauthorized",
+          reason: "No authorization token provided on header",
+        };
       }
       if (auth.exp * 1000 - Date.now() <= 120_000) {
         const newJwt = await signAccess({
@@ -49,7 +52,10 @@ export const auth = new Elysia({ name: "auth.macros" })
         if (!rotate) {
           set.status = 401;
           set.headers["www-authenticate"] = 'Bearer realm="api"';
-          return { error: "Unauthorized" };
+          return {
+            error: "Unauthorized",
+            reason: "Error on rotating refresh token",
+          };
         }
         cookie.rt.set({
           value: rotate.newRaw,
