@@ -62,6 +62,7 @@ export function deobfuscate(data: string) {
     const decoded = new TextDecoder().decode(result);
     const obj = JSON.parse(decoded);
     const parsed = userVerify.parse(obj) as Partial<User>;
+    logger.info("Parsed user:", parsed);
     return { userData: parsed, errorMessage: null };
   } catch (e) {
     logger.error("Error while deobfuscating:", e);
