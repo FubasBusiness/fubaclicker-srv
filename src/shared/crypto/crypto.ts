@@ -18,15 +18,15 @@ const userVerify = z.object({
   generators: z.array(z.number()).optional(),
   inventory: z.record(z.string(), z.number()).optional(),
   equipped: z.array(z.string()).optional(),
-  rebirth_data: z
+  rebirthData: z
     .object({
       rebirthCount: z.number({
         error: "rebirth_data: Must provide 'rebirthCount'",
       }),
-      ascencionCount: z.number({
+      ascensionCount: z.number({
         error: "rebirth_data: Must provide 'ascencionCount'",
       }),
-      trascendenceCount: z.number({
+      transcendenceCount: z.number({
         error: "rebirth_data: Must provide 'transcendenceCount'",
       }),
       celestialToken: z.number({

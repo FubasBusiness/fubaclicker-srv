@@ -25,7 +25,7 @@ export interface User {
   generators: number[];
   inventory: Inventory;
   equipped: string[];
-  rebirth_data: RebirthData;
+  rebirthData: RebirthData;
   achievements: string[];
   achievementStats: AchievementStats;
   upgrades: Upgrades;
@@ -42,9 +42,9 @@ export const users = t.pgTable(
     generators: t.integer("generators").array(),
     inventory: t.jsonb("inventory").$type<Inventory>(),
     equipped: t.varchar("equipped").array(),
-    rebirth_data: t.jsonb("rebirth_data").$type<RebirthData>(),
+    rebirthData: t.jsonb("rebirth_data").$type<RebirthData>(),
     achievements: t.varchar("achievements").array(),
-    achievements_stats: t.jsonb("achievements_stats").$type<AchievementStats>(),
+    achievementsStats: t.jsonb("achievements_stats").$type<AchievementStats>(),
     upgrades: t.jsonb("upgrades").$type<Upgrades>(),
   },
   (table) => [t.uniqueIndex("email_idx").on(table.email)],

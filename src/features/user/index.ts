@@ -36,9 +36,9 @@ export const userController = new Elysia()
               generators: t.Nullable(t.Array(t.Number())),
               inventory: t.Nullable(t.Record(t.String(), t.Number())),
               equipped: t.Nullable(t.Array(t.String())),
-              rebirth_data: t.Nullable(RebirthDataType),
+              rebirthData: t.Nullable(RebirthDataType),
               achievements: t.Nullable(t.Array(t.String())),
-              achievements_stats: t.Nullable(t.Record(t.String(), t.Number())),
+              achievementsStats: t.Nullable(t.Record(t.String(), t.Number())),
               upgrades: t.Nullable(t.Record(t.String(), t.Number())),
             }),
           },
@@ -47,8 +47,8 @@ export const userController = new Elysia()
       )
       .put(
         "/",
-        async ({ userData, set }) => {
-          await UpdateUser(userData);
+        async ({ userData, set, userId }) => {
+          await UpdateUser(userId, userData);
           set.status = 200;
         },
         {

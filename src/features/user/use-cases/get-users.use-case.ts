@@ -14,9 +14,9 @@ export async function GetUser(userId: number) {
         generators: users.generators,
         inventory: users.inventory,
         equipped: users.equipped,
-        rebirth_data: users.rebirth_data,
+        rebirthData: users.rebirthData,
         achievements: users.achievements,
-        achievements_stats: users.achievements_stats,
+        achievementsStats: users.achievementsStats,
         upgrades: users.upgrades,
       })
       .from(users)
@@ -24,17 +24,17 @@ export async function GetUser(userId: number) {
   ).map((u) => ({
     ...u,
     fuba: String(u.fuba),
-    rebirth_data: u.rebirth_data
+    rebirthData: u.rebirthData
       ? {
-          rebirthCount: u.rebirth_data.rebirthCount ?? 0,
-          ascensionCount: u.rebirth_data.ascensionCount ?? 0,
-          transcendenceCount: u.rebirth_data.transcendenceCount ?? 0,
-          celestialToken: u.rebirth_data.celestialToken ?? 0,
+          rebirthCount: u.rebirthData.rebirthCount ?? 0,
+          ascensionCount: u.rebirthData.ascensionCount ?? 0,
+          transcendenceCount: u.rebirthData.transcendenceCount ?? 0,
+          celestialToken: u.rebirthData.celestialToken ?? 0,
           hasUsedOneTimeMultiplier:
-            u.rebirth_data.hasUsedOneTimeMultiplier ?? false,
-          usedCupons: Array.isArray(u.rebirth_data.usedCupons)
-            ? u.rebirth_data.usedCupons
-            : (Array.from(u.rebirth_data.usedCupons ?? []) as string[]),
+            u.rebirthData.hasUsedOneTimeMultiplier ?? false,
+          usedCupons: Array.isArray(u.rebirthData.usedCupons)
+            ? u.rebirthData.usedCupons
+            : (Array.from(u.rebirthData.usedCupons ?? []) as string[]),
         }
       : null,
   }));
