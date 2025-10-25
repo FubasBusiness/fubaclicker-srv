@@ -12,14 +12,9 @@ const app = new Elysia()
     DrizzleQueryError,
   })
   .onError(({ error, code }) => {
-    if (code === "VALIDATION") return error.detail(error.message);
-    if (code === "DrizzleError") {
-      logger.error(error.message, error);
-      return error.message;
-    }
-    if (code === "DrizzleQueryError") {
-      logger.error(error.message, error);
-      return error.message;
+    switch(code){
+      case "VALIDATION": return error.detail(error.message);
+      default: logger.error(undefined, error)
     }
   })
   .use(
