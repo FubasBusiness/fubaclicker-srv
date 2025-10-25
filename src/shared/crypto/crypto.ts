@@ -22,23 +22,23 @@ const userVerify = z.object({
   rebirthData: z
     .object({
       rebirthCount: z.number({
-        error: "rebirth_data: Must provide 'rebirthCount'",
+        error: "rebirthData: Must provide 'rebirthCount'",
       }),
       ascensionCount: z.number({
-        error: "rebirth_data: Must provide 'ascencionCount'",
+        error: "rebirthData: Must provide 'ascencionCount'",
       }),
       transcendenceCount: z.number({
-        error: "rebirth_data: Must provide 'transcendenceCount'",
+        error: "rebirthData: Must provide 'transcendenceCount'",
       }),
       celestialToken: z.number({
-        error: "rebirth_data: Must provide 'celestialToken'",
+        error: "rebirthData: Must provide 'celestialToken'",
       }),
       hasUsedOneTimeMultiplier: z.boolean({
-        error: "rebirth_data: Must provide 'hasUsedOneTimeMultiplier'",
+        error: "rebirthData: Must provide 'hasUsedOneTimeMultiplier'",
       }),
-      usedCupons: z.array(
+      usedCoupons: z.array(
         z.string({
-          error: "rebirth_data: Must provide 'usedCupons'",
+          error: "rebirthData: Must provide 'usedCupons'",
         }),
       ),
     })

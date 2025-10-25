@@ -32,9 +32,9 @@ export async function GetUser(userId: number) {
           celestialToken: u.rebirthData.celestialToken ?? 0,
           hasUsedOneTimeMultiplier:
             u.rebirthData.hasUsedOneTimeMultiplier ?? false,
-          usedCupons: Array.isArray(u.rebirthData.usedCupons)
-            ? u.rebirthData.usedCupons
-            : (Array.from(u.rebirthData.usedCupons ?? []) as string[]),
+          usedCupons: Array.isArray(u.rebirthData.usedCoupons)
+            ? u.rebirthData.usedCoupons
+            : (Array.from(u.rebirthData.usedCoupons ?? []) as string[]),
         }
       : null,
   }));
