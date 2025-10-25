@@ -1,7 +1,9 @@
 import { pino } from "pino";
 
 const internalLogger = pino({
-  transport: Bun.env.NODE_ENV ? { target: "pino-pretty", options: { colorize: true } } : undefined,
+  transport: Bun.env.NODE_ENV
+    ? undefined
+    : { target: "pino-pretty", options: { colorize: true } },
 });
 function loggerFactory() {
   function error(message?: string, err?: unknown) {
