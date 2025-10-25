@@ -10,6 +10,7 @@
     "@elysiajs/openapi": "^1.4.11",
     "drizzle-orm": "^0.44.6",
     "elysia": "latest",
+    "fubaclicker": ".",
     "jose": "^6.1.0",
     "mercadopago": "^2.9.0",
     "moment": "^2.30.1",
