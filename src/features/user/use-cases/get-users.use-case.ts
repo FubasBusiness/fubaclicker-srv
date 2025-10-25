@@ -16,7 +16,7 @@ export async function GetUser(userId: number) {
           equipped: users.equipped,
           rebirth_data: users.rebirth_data,
           achievements: users.achievements,
-          achievements_stats: users.achievement_stats,
+          achievements_stats: users.achievements_stats,
           upgrades: users.upgrades,
         })
         .from(users)
@@ -33,7 +33,7 @@ export async function GetUser(userId: number) {
               u.rebirth_data.hasUsedOneTimeMultiplier ?? false,
             usedCupons: Array.isArray(u.rebirth_data.usedCupons)
               ? u.rebirth_data.usedCupons
-              : Array.from(u.rebirth_data.usedCupons ?? []),
+              : (Array.from(u.rebirth_data.usedCupons ?? []) as string[]),
           }
         : null,
     }));

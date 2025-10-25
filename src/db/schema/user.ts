@@ -10,7 +10,7 @@ interface RebirthData {
   transcendenceCount: number;
   celestialToken: number;
   hasUsedOneTimeMultiplier: boolean;
-  usedCupons: Set<string>;
+  usedCupons: string;
 }
 
 interface AchievementStats {
@@ -35,16 +35,16 @@ export const users = t.pgTable(
   "users",
   {
     id: t.integer("id").generatedByDefaultAsIdentity().primaryKey(),
-    email: t.varchar("email").notNull().unique(),
+    email: t.varchar("email").notNull(),
     username: t.varchar("username").notNull(),
     password: t.varchar("password").notNull(),
-    fuba: t.numeric("fuba").notNull(),
+    fuba: t.numeric("fuba").$type<string>().notNull(),
     generators: t.integer("generators").array(),
     inventory: t.jsonb("inventory").$type<Inventory>(),
     equipped: t.varchar("equipped").array(),
     rebirth_data: t.jsonb("rebirth_data").$type<RebirthData>(),
     achievements: t.varchar("achievements").array(),
-    achievement_stats: t.jsonb("achievements_stats").$type<AchievementStats>(),
+    achievements_stats: t.jsonb("achievements_stats").$type<AchievementStats>(),
     upgrades: t.jsonb("upgrades").$type<Upgrades>(),
   },
   (table) => [t.uniqueIndex("email_idx").on(table.email)],
