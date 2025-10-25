@@ -6,21 +6,22 @@ export const auth = new Elysia({ name: "auth.macros" })
   .macro("authBase", {
     headers: t.Object({
       authorization: t.Optional(t.String()),
-      refresh_token: t.Optional(t.String()),
     }),
-    resolve: async ({ headers: { authorization, refresh_token } }) => {
-      if (!authorization || !refresh_token)
-        return { userId: null, auth: null, refresh_token: null };
+    cookie: t.Cookie({
+      rt: t.Optional(t.String()),
+    }),
+    resolve: async ({ headers: { authorization } }) => {
+      if (!authorization) return { userId: null, auth: null };
       const auth = await verifyAccess(authorization);
-      if (!auth) return { userId: null, auth: null, refresh_token };
+      if (!auth) return { userId: null, auth: null };
       const { sub: userId } = auth;
-      return { userId: Number(userId), auth, refresh_token };
+      return { userId: Number(userId), auth };
     },
   })
   .macro("auth", {
     authBase: true,
     resolve: ({ userId }) => ({ userId: userId! }),
-    beforeHandle: async ({ set, auth, refresh_token, userId }) => {
+    beforeHandle: async ({ set, cookie, auth, userId }) => {
       if (!auth) {
         set.status = 401;
         set.headers["www-authenticate"] = 'Bearer realm="api"';
@@ -32,19 +33,32 @@ export const auth = new Elysia({ name: "auth.macros" })
           sub: String(userId!),
         });
         set.headers["authorization"] = `Bearer ${newJwt}`;
-        if (!refresh_token) {
+        if (!cookie.rt.value) {
           const newToken = await IssueRefresh(userId!);
-          set.status = 200;
-          set.headers["refresh_token"] = newToken.raw;
+          cookie.rt.set({
+            value: newToken.raw,
+            httpOnly: true,
+            secure: Bun.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+            maxAge: 60 * 60 * 24 * 30,
+          });
           return;
         }
-        const rotate = await RotateRefresh(refresh_token);
+        const rotate = await RotateRefresh(cookie.rt.value);
         if (!rotate) {
           set.status = 401;
           set.headers["www-authenticate"] = 'Bearer realm="api"';
           return { error: "Unauthorized" };
         }
-        set.headers["refresh_token"] = rotate.newRaw;
+        cookie.rt.set({
+          value: rotate.newRaw,
+          httpOnly: true,
+          secure: Bun.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 60 * 60 * 24 * 30,
+        });
       }
     },
   });
