@@ -23,6 +23,7 @@ export async function GetUser(userId: number) {
       .where(eq(users.id, userId))
   ).map((u) => ({
     ...u,
+    fuba: String(u.fuba),
     rebirth_data: u.rebirth_data
       ? {
           rebirthCount: u.rebirth_data.rebirthCount ?? 0,
