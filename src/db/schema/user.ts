@@ -10,7 +10,7 @@ interface RebirthData {
   transcendenceCount: number;
   celestialToken: number;
   hasUsedOneTimeMultiplier: boolean;
-  usedCupons: string;
+  usedCupons: string[];
 }
 
 interface AchievementStats {
