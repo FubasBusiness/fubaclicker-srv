@@ -1,5 +1,6 @@
 import { User } from "../../db/schema/user";
 import { z } from "zod";
+import { logger } from "../logger/logger";
 
 function base64ToUint8Array(b64: string) {
   if (typeof Buffer !== "undefined" && typeof Buffer.from === "function") {
@@ -48,17 +49,22 @@ const userVerify = z.object({
 });
 
 export function deobfuscate(data: string) {
-  const key = "fuba_secret_key_2024";
-  const keyBytes = new TextEncoder().encode(key);
-  const dataBytes = base64ToUint8Array(data);
-  const result = new Uint8Array(dataBytes.length);
+  try {
+    const key = "fuba_secret_key_2024";
+    const keyBytes = new TextEncoder().encode(key);
+    const dataBytes = base64ToUint8Array(data);
+    const result = new Uint8Array(dataBytes.length);
 
-  for (let i = 0; i < dataBytes.length; i++) {
-    result[i] = dataBytes[i] ^ keyBytes[i % keyBytes.length];
+    for (let i = 0; i < dataBytes.length; i++) {
+      result[i] = dataBytes[i] ^ keyBytes[i % keyBytes.length];
+    }
+
+    const decoded = new TextDecoder().decode(result);
+    const obj = JSON.parse(decoded);
+    const parsed = userVerify.parse(obj) as Partial<User>;
+    return { userData: parsed, errorMessage: null };
+  } catch (e) {
+    logger.error("Error while deobfuscating:", e);
+    return { userData: null, errorMessage: (e as Error).message };
   }
-
-  const decoded = new TextDecoder().decode(result);
-  const obj = JSON.parse(decoded);
-  const parsed = userVerify.parse(obj) as Partial<User>;
-  return parsed;
 }

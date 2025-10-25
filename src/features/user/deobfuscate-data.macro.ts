@@ -6,6 +6,6 @@ export const deobfuscateMacro = new Elysia().macro("deobfuscate", {
     data: t.String(),
   }),
   async resolve({ body: { data } }) {
-    return { userData: deobfuscate(data) };
+    return { ...deobfuscate(data) };
   },
 });

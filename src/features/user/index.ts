@@ -47,7 +47,11 @@ export const userController = new Elysia()
       )
       .put(
         "/",
-        async ({ userData, set, userId }) => {
+        async ({ userData, errorMessage, set, userId }) => {
+          if (!userData) {
+            set.status = 400;
+            return { error: errorMessage };
+          }
           await UpdateUser(userId, userData);
           set.status = 200;
         },
@@ -60,6 +64,7 @@ export const userController = new Elysia()
           tags: ["user"],
           response: {
             200: t.Void(),
+            400: t.Object({ error: t.Nullable(t.String()) }),
           },
         },
       ),
