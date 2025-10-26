@@ -3,12 +3,7 @@ import { users } from "./schema/user";
 import { refreshTokens } from "./schema/refresh-tokens";
 import postgres from "postgres";
 
-const client = postgres(Bun.env.FubaDB!, {
-  types: {
-    numeric: { parse: (x) => x },
-    bigInt: { parse: (x) => x },
-  },
-});
+const client = postgres(Bun.env.FubaDB!);
 
 export const db = drizzle({
   client,
