@@ -26,6 +26,7 @@ export const rankingController = new Elysia()
             username: t.String(),
             rebirthData: t.Nullable(rebirthData),
             achievements: t.Nullable(t.Array(t.String())),
+            fuba: t.String(),
           }),
         ),
       },
