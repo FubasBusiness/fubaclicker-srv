@@ -3,7 +3,12 @@ import { db } from "../../../db";
 
 export async function GetTopFifty() {
   return await db.query.users.findMany({
-    columns: { username: true, rebirthData: true, achievements: true },
+    columns: {
+      username: true,
+      rebirthData: true,
+      achievements: true,
+      fuba: true,
+    },
     orderBy: (users) => [
       sql`COALESCE((${users.rebirthData} ->> 'transcendenceCount')::int, 0) DESC`,
       sql`COALESCE((${users.rebirthData} ->> 'ascensionCount')::int, 0) DESC`,
