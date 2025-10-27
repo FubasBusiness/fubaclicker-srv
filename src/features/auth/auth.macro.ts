@@ -4,13 +4,12 @@ import { IssueRefresh, RotateRefresh } from "./repository";
 
 export const auth = new Elysia({ name: "auth.macros" })
   .macro("authBase", {
-    headers: t.Object({
-      authorization: t.Optional(t.String()),
-    }),
     cookie: t.Cookie({
       rt: t.Optional(t.String()),
+      authorization: t.Optional(t.String()),
     }),
-    resolve: async ({ headers: { authorization } }) => {
+    resolve: async ({ cookie }) => {
+      const authorization = cookie.authorization.value;
       if (!authorization) return { userId: null, auth: null };
       const auth = await verifyAccess(authorization);
       if (!auth) return { userId: null, auth: null };
@@ -24,7 +23,6 @@ export const auth = new Elysia({ name: "auth.macros" })
     beforeHandle: async ({ set, cookie, auth, userId }) => {
       if (!auth) {
         set.status = 401;
-        set.headers["www-authenticate"] = 'Bearer realm="api"';
         return {
           error: "Unauthorized",
           reason: "No authorization token provided on header",
@@ -35,7 +33,14 @@ export const auth = new Elysia({ name: "auth.macros" })
           aud: "web",
           sub: String(userId!),
         });
-        set.headers["authorization"] = `Bearer ${newJwt}`;
+        cookie.authorization.set({
+          value: `Bearer ${newJwt}`,
+          httpOnly: true,
+          secure: Bun.env.NODE_ENV === "production",
+          sameSite: "none",
+          path: "/",
+          maxAge: 60 * 60 * 24 * 30,
+        });
         if (!cookie.rt.value) {
           const newToken = await IssueRefresh(userId!);
           cookie.rt.set({

@@ -16,7 +16,14 @@ export const authController = new Elysia().group("/auth", (app) =>
           path: "/",
           maxAge: 60 * 60 * 24 * 30,
         });
-        set.headers["authorization"] = `Bearer ${jwt}`;
+        cookie.authorization.set({
+          value: `Bearer ${jwt}`,
+          httpOnly: true,
+          secure: Bun.env.NODE_ENV === "production",
+          sameSite: "none",
+          path: "/",
+          maxAge: 60 * 60 * 24 * 30,
+        });
         set.status = 200;
         return { jwt, raw };
       },
@@ -47,6 +54,14 @@ export const authController = new Elysia().group("/auth", (app) =>
         set.headers["authorization"] = `Bearer ${result.jwt}`;
         cookie.rt.set({
           value: result.rawRefreshToken,
+          httpOnly: true,
+          secure: Bun.env.NODE_ENV === "production",
+          sameSite: "none",
+          path: "/",
+          maxAge: 60 * 60 * 24 * 30,
+        });
+        cookie.authorization.set({
+          value: `Bearer ${result.jwt}`,
           httpOnly: true,
           secure: Bun.env.NODE_ENV === "production",
           sameSite: "none",

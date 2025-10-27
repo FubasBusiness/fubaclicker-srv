@@ -1,4 +1,4 @@
-import { and, eq, gt, isNotNull } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { sha256Base16 } from "../utils/crypto";
 import { newOpaqueToken } from "../utils/new-opaque-token";
 import moment from "moment";
@@ -8,47 +8,41 @@ import { refreshTokens } from "../../../db/schema/refresh-tokens";
 export async function RotateRefresh(raw: string) {
   const hash = await sha256Base16(raw);
 
-  const old = await db
-    .select()
-    .from(refreshTokens)
-    .where(
+  const old = await db.query.refreshTokens.findFirst({
+    where: (table, { and, eq, gt }) =>
       and(
-        eq(refreshTokens.token_hash, hash),
-        eq(refreshTokens.revoked, false),
-        gt(refreshTokens.expires_at, moment().toDate()),
+        eq(table.token_hash, hash),
+        eq(table.revoked, false),
+        gt(table.expires_at, moment().toDate()),
       ),
-    );
-  if (!old[0]) return null;
-  await db
-    .update(refreshTokens)
-    .set({ revoked: true })
-    .where(eq(refreshTokens.id, old[0].id));
+  });
+  if (!old) return null;
 
   const newRaw = newOpaqueToken();
   const newHash = await sha256Base16(newRaw);
   const newNow = moment();
 
-  let remaining = moment(old[0].expires_at).diff(newNow);
+  let remaining = moment(old.expires_at).diff(newNow);
 
   if (remaining < 0) remaining = 0;
   const ONE_DAY = 24 * 60 * 60 * 1000;
   const newExpires = newNow.clone().add(remaining || ONE_DAY * 30, "ms");
 
-  const newToken = await db
-    .insert(refreshTokens)
-    .values({
-      user_id: old[0].user_id,
+  await db
+    .update(refreshTokens)
+    .set({
       token_hash: newHash,
-      family_id: old[0].family_id,
       expires_at: newExpires.toDate(),
+      created_at: newNow.toDate(),
+      revoked: false,
+      replaced_by: null,
     })
-    .returning();
-  if (newToken.length <= 0) return;
-  await db.update(refreshTokens).set({ replaced_by: newToken[0].id });
+    .where(eq(refreshTokens.id, old.id));
+
   return {
-    userId: old[0].user_id,
+    userId: old.user_id,
     newRaw,
     expires_at: newExpires,
-    family_id: old[0].family_id,
+    family_id: old.family_id,
   };
 }
