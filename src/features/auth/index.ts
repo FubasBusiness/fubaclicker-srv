@@ -12,7 +12,7 @@ export const authController = new Elysia().group("/auth", (app) =>
           value: raw,
           httpOnly: true,
           secure: Bun.env.NODE_ENV === "production",
-          sameSite: "none",
+          sameSite: Bun.env.NODE_ENV === "production" ? "none" : "lax",
           path: "/",
           maxAge: 60 * 60 * 24 * 30,
         });
@@ -20,7 +20,7 @@ export const authController = new Elysia().group("/auth", (app) =>
           value: `Bearer ${jwt}`,
           httpOnly: true,
           secure: Bun.env.NODE_ENV === "production",
-          sameSite: "none",
+          sameSite: Bun.env.NODE_ENV === "production" ? "none" : "lax",
           path: "/",
           maxAge: 60 * 60 * 24 * 30,
         });
@@ -56,7 +56,7 @@ export const authController = new Elysia().group("/auth", (app) =>
           value: result.rawRefreshToken,
           httpOnly: true,
           secure: Bun.env.NODE_ENV === "production",
-          sameSite: "none",
+          sameSite: Bun.env.NODE_ENV === "production" ? "none" : "lax",
           path: "/",
           maxAge: 60 * 60 * 24 * 30,
         });
@@ -64,7 +64,7 @@ export const authController = new Elysia().group("/auth", (app) =>
           value: `Bearer ${result.jwt}`,
           httpOnly: true,
           secure: Bun.env.NODE_ENV === "production",
-          sameSite: "none",
+          sameSite: Bun.env.NODE_ENV === "production" ? "none" : "lax",
           path: "/",
           maxAge: 60 * 60 * 24 * 30,
         });

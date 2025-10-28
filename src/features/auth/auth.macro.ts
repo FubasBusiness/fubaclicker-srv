@@ -47,7 +47,7 @@ export const auth = new Elysia({ name: "auth.macros" })
             value: newToken.raw,
             httpOnly: true,
             secure: Bun.env.NODE_ENV === "production",
-            sameSite: "none",
+            sameSite: Bun.env.NODE_ENV === "production" ? "none" : "lax",
             path: "/",
             maxAge: 60 * 60 * 24 * 30,
           });
@@ -66,7 +66,7 @@ export const auth = new Elysia({ name: "auth.macros" })
           value: rotate.newRaw,
           httpOnly: true,
           secure: Bun.env.NODE_ENV === "production",
-          sameSite: "none",
+          sameSite: Bun.env.NODE_ENV === "production" ? "none" : "lax",
           path: "/",
           maxAge: 60 * 60 * 24 * 30,
         });
