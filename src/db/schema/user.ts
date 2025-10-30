@@ -46,6 +46,7 @@ export const users = t.pgTable(
     achievements: t.varchar("achievements").array(),
     achievementsStats: t.jsonb("achievements_stats").$type<AchievementStats>(),
     upgrades: t.jsonb("upgrades").$type<Upgrades>(),
+    ip: t.varchar("ip"),
   },
   (table) => [t.uniqueIndex("email_idx").on(table.email)],
 );

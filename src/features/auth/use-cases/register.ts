@@ -4,6 +4,7 @@ import { signAccess } from "../utils/crypto";
 import { IssueRefresh } from "../repository";
 import { db } from "../../../db";
 import { Conflict } from "../../../shared/errors/conflict";
+import { TooManyAccounts } from "../../../shared/errors/too-many-accounts";
 
 type RegisterInput = {
   email: string;
@@ -11,16 +12,21 @@ type RegisterInput = {
   password: string;
 };
 
-export async function Register({
-  email,
-  username,
-  password: rawPassword,
-}: RegisterInput) {
+export async function Register(
+  { email, username, password: rawPassword }: RegisterInput,
+  request: Request,
+) {
   try {
+    const ip = request.headers.get("x-forwarded-for") ?? "anon";
+    const existingUsersWithThisIp = await db.query.users.findMany({
+      where: (table, { eq }) => eq(table.ip, ip),
+      limit: 6,
+    });
+    if (existingUsersWithThisIp.length >= 5) throw new TooManyAccounts();
     const password = await Bun.password.hash(rawPassword);
     const result = await db
       .insert(users)
-      .values({ email, password, fuba: "0", username })
+      .values({ email, password, fuba: "0", username, ip })
       .returning();
     const jwt = await signAccess({ aud: "web", sub: String(result[0].id) });
     const refresh = await IssueRefresh(result[0].id);

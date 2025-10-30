@@ -49,8 +49,8 @@ export const authController = new Elysia().group("/auth", (app) =>
     )
     .post(
       "/register",
-      async ({ set, cookie, body }) => {
-        const result = await Register(body);
+      async ({ set, cookie, body, request }) => {
+        const result = await Register(body, request);
         set.headers["authorization"] = `Bearer ${result.jwt}`;
         cookie.rt.set({
           value: result.rawRefreshToken,

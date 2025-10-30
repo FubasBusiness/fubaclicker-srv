@@ -15,6 +15,13 @@
       "when": 1761250655543,
       "tag": "0001_username_field_on_user",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1761852591729,
+      "tag": "0002_added_ip_to_user_table",
+      "breakpoints": true
     }
   ]
 }
