@@ -17,7 +17,8 @@ export async function Register(
   request: Request,
 ) {
   try {
-    const ip = request.headers.get("x-forwarded-for") ?? "anon";
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const ip = forwardedFor?.split(",")[0].trim() ?? "anon";
     const existingUsersWithThisIp = await db.query.users.findMany({
       where: (table, { eq }) => eq(table.ip, ip),
       limit: 6,

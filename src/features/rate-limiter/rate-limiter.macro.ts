@@ -8,7 +8,8 @@ export const rateLimiter = new Elysia({ name: "rate-limiter.macros" }).macro(
   "rateLimit",
   {
     async beforeHandle({ request, set }) {
-      const ip = request.headers.get("x-forwarded-for") ?? "anon";
+      const forwardedFor = request.headers.get("x-forwarded-for");
+      const ip = forwardedFor?.split(",")[0].trim() ?? "anon";
       const key = `rl:${ip}`;
 
       const count = await redis.incr(key);
