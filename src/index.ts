@@ -23,6 +23,8 @@ const app = new Elysia()
         return { error: "Too Many Accounts", detail: error.message };
       default:
         logger.error(undefined, error);
+        set.status = 500;
+        return { error: "Unknown server error" };
     }
   })
   .use(openapi())
