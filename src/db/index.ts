@@ -4,7 +4,7 @@ import { refreshTokens } from "./schema/refresh-tokens";
 import postgres from "postgres";
 
 const client = postgres(Bun.env.FubaDB!, {
-  ssl: true,
+  ssl: "require",
 });
 
 export const db = drizzle({
