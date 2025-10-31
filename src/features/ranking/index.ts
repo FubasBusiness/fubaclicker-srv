@@ -20,7 +20,6 @@ export const rankingController = new Elysia()
         return await GetTopFifty();
       },
       {
-        auth: true,
         response: t.Array(
           t.Object({
             username: t.String(),
