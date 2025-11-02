@@ -30,9 +30,7 @@ const userVerify = z.object({
       transcendenceCount: z.number({
         error: "rebirthData: Must provide 'transcendenceCount'",
       }),
-      furuborusCount: z.number({
-        error: "rebirthData: Must provide 'furuborusCount'",
-      }),
+      furuborusCount: z.number().optional().default(0),
       celestialToken: z.number({
         error: "rebirthData: Must provide 'celestialToken'",
       }),
@@ -44,9 +42,7 @@ const userVerify = z.object({
           error: "rebirthData: Must provide 'usedCupons'",
         }),
       ),
-      forus: z.number({
-        error: "rebirthData: Must provide 'forus'",
-      }),
+      forus: z.number().optional().default(0),
     })
     .optional(),
   achievements: z.array(z.string()).optional(),
@@ -68,6 +64,12 @@ export function deobfuscate(data: string) {
     const decoded = new TextDecoder().decode(result);
     const obj = JSON.parse(decoded);
     const parsed = userVerify.parse(obj) as Partial<User>;
+    
+    if (parsed.rebirthData) {
+      parsed.rebirthData.furuborusCount = parsed.rebirthData.furuborusCount ?? 0;
+      parsed.rebirthData.forus = parsed.rebirthData.forus ?? 0;
+    }
+    
     logger.info("Parsed user:", parsed);
     return { userData: parsed, errorMessage: null };
   } catch (e) {
