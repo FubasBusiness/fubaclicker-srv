@@ -30,6 +30,9 @@ const userVerify = z.object({
       transcendenceCount: z.number({
         error: "rebirthData: Must provide 'transcendenceCount'",
       }),
+      furuborusCount: z.number({
+        error: "rebirthData: Must provide 'furuborusCount'",
+      }),
       celestialToken: z.number({
         error: "rebirthData: Must provide 'celestialToken'",
       }),
@@ -41,6 +44,9 @@ const userVerify = z.object({
           error: "rebirthData: Must provide 'usedCupons'",
         }),
       ),
+      forus: z.number({
+        error: "rebirthData: Must provide 'forus'",
+      }),
     })
     .optional(),
   achievements: z.array(z.string()).optional(),

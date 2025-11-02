@@ -29,12 +29,14 @@ export async function GetUser(userId: number) {
           rebirthCount: u.rebirthData.rebirthCount ?? 0,
           ascensionCount: u.rebirthData.ascensionCount ?? 0,
           transcendenceCount: u.rebirthData.transcendenceCount ?? 0,
+          furuborusCount: u.rebirthData.furuborusCount ?? 0,
           celestialToken: u.rebirthData.celestialToken ?? 0,
           hasUsedOneTimeMultiplier:
             u.rebirthData.hasUsedOneTimeMultiplier ?? false,
           usedCupons: Array.isArray(u.rebirthData.usedCoupons)
             ? u.rebirthData.usedCoupons
             : (Array.from(u.rebirthData.usedCoupons ?? []) as string[]),
+          forus: u.rebirthData.forus ?? 0,
         }
       : null,
   }));

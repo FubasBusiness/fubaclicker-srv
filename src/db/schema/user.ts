@@ -8,9 +8,11 @@ interface RebirthData {
   rebirthCount: number;
   ascensionCount: number;
   transcendenceCount: number;
+  furuborusCount: number;
   celestialToken: number;
   hasUsedOneTimeMultiplier: boolean;
   usedCoupons: string[];
+  forus: number;
 }
 
 interface AchievementStats {

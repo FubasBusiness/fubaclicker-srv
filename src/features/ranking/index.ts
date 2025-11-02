@@ -6,9 +6,11 @@ const rebirthData = t.Object({
   rebirthCount: t.Number(),
   ascensionCount: t.Number(),
   transcendenceCount: t.Number(),
+  furuborusCount: t.Number(),
   celestialToken: t.Number(),
   hasUsedOneTimeMultiplier: t.Boolean(),
   usedCoupons: t.Array(t.String()),
+  forus: t.Number(),
 });
 
 export const rankingController = new Elysia()
