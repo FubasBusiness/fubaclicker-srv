@@ -10,7 +10,7 @@ export async function GetTopFifty() {
       fuba: true,
     },
     orderBy: (users) => [
-      sql`COALESCE((${users.rebirthData} ->> 'forus')::int, 0) DESC`,
+      sql`COALESCE((${users.rebirthData} ->> 'furuborusCount')::int, 0) DESC`,
       sql`COALESCE((${users.rebirthData} ->> 'transcendenceCount')::int, 0) DESC`,
       sql`COALESCE((${users.rebirthData} ->> 'ascensionCount')::int, 0) DESC`,
       sql`COALESCE((${users.rebirthData} ->> 'rebirthCount')::int, 0) DESC`,
