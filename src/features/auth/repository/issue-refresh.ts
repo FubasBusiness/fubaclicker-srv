@@ -21,5 +21,8 @@ export async function IssueRefresh(userId: number, days = 30) {
       expires_at,
     })
     .returning({ id: refreshTokens.id });
+  if (!result || result.length === 0) {
+    throw new Error("Failed to create refresh token");
+  }
   return { raw, id: result[0].id, family_id, expires_at };
 }

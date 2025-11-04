@@ -21,5 +21,5 @@ export async function LogIn({ email, password }: LogInInput) {
   const jwt = await signAccess({ sub: String(user[0].id), aud: "web" });
   const issue = await IssueRefresh(user[0].id);
 
-  return { jwt, ...issue };
+  return { jwt, raw: issue.raw };
 }

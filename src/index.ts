@@ -27,7 +27,10 @@ const app = new Elysia()
         set.status = 401;
         return { error: error.message };
       default:
-        logger.error(undefined, error);
+        logger.error("Unhandled error", error);
+        if (error instanceof Error) {
+          logger.error(`Error name: ${error.name}, message: ${error.message}, stack: ${error.stack}`);
+        }
         set.status = 500;
         return { error: "Unknown server error" };
     }
