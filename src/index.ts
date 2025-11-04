@@ -9,6 +9,8 @@ import { logger } from "./shared/logger/logger";
 import { rateLimiter } from "./features/rate-limiter/rate-limiter.macro";
 import { TooManyAccounts } from "./shared/errors/too-many-accounts";
 import { InvalidCredentials } from "./shared/errors/invalid-credentials";
+import { runMigrations } from "./db/migrate";
+
 const app = new Elysia()
   .error({
     DrizzleError,
@@ -43,5 +45,14 @@ const app = new Elysia()
   })
   .use(userController)
   .use(authController)
-  .use(rankingController)
-  .listen(3000);
+  .use(rankingController);
+
+runMigrations()
+  .then(() => {
+    logger.info("Server starting...");
+    app.listen(3000);
+  })
+  .catch((error) => {
+    logger.error("Failed to run migrations", error);
+    process.exit(1);
+  });
