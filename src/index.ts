@@ -8,11 +8,13 @@ import { DrizzleError, DrizzleQueryError } from "drizzle-orm";
 import { logger } from "./shared/logger/logger";
 import { rateLimiter } from "./features/rate-limiter/rate-limiter.macro";
 import { TooManyAccounts } from "./shared/errors/too-many-accounts";
+import { InvalidCredentials } from "./shared/errors/invalid-credentials";
 const app = new Elysia()
   .error({
     DrizzleError,
     DrizzleQueryError,
     TooManyAccounts,
+    InvalidCredentials,
   })
   .onError(({ error, code, set }) => {
     switch (code) {
@@ -21,6 +23,9 @@ const app = new Elysia()
       case "TooManyAccounts":
         set.status = 429;
         return { error: "Too Many Accounts", detail: error.message };
+      case "InvalidCredentials":
+        set.status = 401;
+        return { error: error.message };
       default:
         logger.error(undefined, error);
         set.status = 500;

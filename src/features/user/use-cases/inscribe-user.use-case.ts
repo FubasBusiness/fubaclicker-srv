@@ -19,3 +19,5 @@ export async function InscribeUser(userId: number) {
     .where(eq(users.id, userId));
 }
 
+
+

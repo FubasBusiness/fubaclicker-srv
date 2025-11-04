@@ -12,8 +12,11 @@ type LogInInput = {
 
 export async function LogIn({ email, password }: LogInInput) {
   const user = await db.select().from(users).where(eq(users.email, email));
-  const isCorrectCredentials =
-    user && (await Bun.password.verify(password, user[0].password));
+  if (!user || user.length === 0) throw new InvalidCredentials();
+  const isCorrectCredentials = await Bun.password.verify(
+    password,
+    user[0].password,
+  );
   if (!isCorrectCredentials) throw new InvalidCredentials();
   const jwt = await signAccess({ sub: String(user[0].id), aud: "web" });
   const issue = await IssueRefresh(user[0].id);
