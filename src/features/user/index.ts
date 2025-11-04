@@ -2,6 +2,7 @@ import Elysia, { NotFoundError, t } from "elysia";
 import { auth } from "../auth/auth.macro";
 import { GetUser } from "./use-cases/get-users.use-case";
 import { UpdateUser } from "./use-cases/update-user.use-case";
+import { InscribeUser } from "./use-cases/inscribe-user.use-case";
 import { deobfuscateMacro } from "./deobfuscate-data.macro";
 
 const RebirthDataType = t.Object({
@@ -18,6 +19,20 @@ const RebirthDataType = t.Object({
 export const userController = new Elysia()
   .use(auth)
   .use(deobfuscateMacro)
+  .post(
+    "/inscribe",
+    async ({ userId, set }) => {
+      await InscribeUser(userId);
+      set.status = 200;
+    },
+    {
+      auth: true,
+      tags: ["user"],
+      response: {
+        200: t.Void(),
+      },
+    },
+  )
   .group("/user", (app) =>
     app
       .get(

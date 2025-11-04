@@ -1,6 +1,7 @@
 import Elysia, { t } from "elysia";
 import { auth } from "../auth/auth.macro";
 import { GetTopFifty } from "./use-case/get-top-fifty";
+import { GetTopFiftyInscribed } from "./use-case/get-top-fifty-inscribed";
 
 const rebirthData = t.Object({
   rebirthCount: t.Number(),
@@ -16,20 +17,37 @@ const rebirthData = t.Object({
 export const rankingController = new Elysia()
   .use(auth)
   .group("/ranking", (app) =>
-    app.get(
-      "/",
-      async () => {
-        return await GetTopFifty();
-      },
-      {
-        response: t.Array(
-          t.Object({
-            username: t.String(),
-            rebirthData: t.Nullable(rebirthData),
-            achievements: t.Nullable(t.Array(t.String())),
-            fuba: t.String(),
-          }),
-        ),
-      },
-    ),
+    app
+      .get(
+        "/",
+        async () => {
+          return await GetTopFifty();
+        },
+        {
+          response: t.Array(
+            t.Object({
+              username: t.String(),
+              rebirthData: t.Nullable(rebirthData),
+              achievements: t.Nullable(t.Array(t.String())),
+              fuba: t.String(),
+            }),
+          ),
+        },
+      )
+      .get(
+        "/inscribed",
+        async () => {
+          return await GetTopFiftyInscribed();
+        },
+        {
+          response: t.Array(
+            t.Object({
+              username: t.String(),
+              rebirthData: t.Nullable(rebirthData),
+              achievements: t.Nullable(t.Array(t.String())),
+              fuba: t.String(),
+            }),
+          ),
+        },
+      ),
   );
