@@ -1,7 +1,11 @@
 import { jwtVerify, SignJWT } from "jose";
 
 const enc = new TextEncoder();
-const secret = enc.encode(Bun.env.JWT_SECRET ?? "dev-secret");
+const jwtSecret = Bun.env.JWT_SECRET;
+if (!jwtSecret && Bun.env.NODE_ENV === "production") {
+  throw new Error("JWT_SECRET environment variable is required in production");
+}
+const secret = enc.encode(jwtSecret ?? "dev-secret");
 
 export type AccessClaims = { sub: string; aud: "web" | "cli"; role?: string };
 export async function signAccess(claims: AccessClaims, ttl = "45m") {

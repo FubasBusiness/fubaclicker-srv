@@ -4,6 +4,7 @@ import { GetUser } from "./use-cases/get-users.use-case";
 import { UpdateUser } from "./use-cases/update-user.use-case";
 import { InscribeUser } from "./use-cases/inscribe-user.use-case";
 import { deobfuscateMacro } from "./deobfuscate-data.macro";
+import { obfuscate } from "../../shared/crypto/helper";
 
 const RebirthDataType = t.Object({
   rebirthCount: t.Number(),
@@ -40,23 +41,37 @@ export const userController = new Elysia()
         async ({ userId }) => {
           const result = await GetUser(userId);
           if (!result[0]) throw new NotFoundError("User not found");
-          return result[0];
+          const userData = result[0];
+          const normalizedData = {
+            fuba: userData.fuba,
+            generators: userData.generators ?? undefined,
+            inventory: userData.inventory ?? undefined,
+            equipped: userData.equipped ?? undefined,
+            rebirthData: userData.rebirthData
+              ? {
+                  rebirthCount: userData.rebirthData.rebirthCount,
+                  ascensionCount: userData.rebirthData.ascensionCount,
+                  transcendenceCount: userData.rebirthData.transcendenceCount,
+                  furuborusCount: userData.rebirthData.furuborusCount,
+                  celestialToken: userData.rebirthData.celestialToken,
+                  hasUsedOneTimeMultiplier:
+                    userData.rebirthData.hasUsedOneTimeMultiplier,
+                  usedCoupons: userData.rebirthData.usedCupons,
+                  forus: userData.rebirthData.forus,
+                }
+              : undefined,
+            achievements: userData.achievements ?? undefined,
+            achievementStats: userData.achievementsStats ?? undefined,
+            upgrades: userData.upgrades ?? undefined,
+          };
+          const obfuscatedData = obfuscate(normalizedData);
+          return { data: obfuscatedData };
         },
         {
           auth: true,
           response: {
             200: t.Object({
-              id: t.Number(),
-              email: t.String(),
-              username: t.String(),
-              fuba: t.String(),
-              generators: t.Nullable(t.Array(t.Number())),
-              inventory: t.Nullable(t.Record(t.String(), t.Number())),
-              equipped: t.Nullable(t.Array(t.String())),
-              rebirthData: t.Nullable(RebirthDataType),
-              achievements: t.Nullable(t.Array(t.String())),
-              achievementsStats: t.Nullable(t.Record(t.String(), t.Number())),
-              upgrades: t.Nullable(t.Record(t.String(), t.Number())),
+              data: t.String(),
             }),
           },
           tags: ["user"],

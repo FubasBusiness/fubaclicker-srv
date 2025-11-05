@@ -59,9 +59,3 @@ export function deobfuscateToObject<T = unknown>(b64: string): T {
   return JSON.parse(json) as T;
 }
 
-console.log(
-  obfuscate({
-    fuba: "3148237128",
-    inventory: { teste: 20, covro: 1238127376123 },
-  }),
-);

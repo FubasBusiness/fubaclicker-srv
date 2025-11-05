@@ -1,6 +1,7 @@
 import { sql, eq } from "drizzle-orm";
 import { db } from "../../../db";
 import { users } from "../../../db/schema/user";
+import { obfuscate } from "../../../shared/crypto/helper";
 
 export async function GetTopFiftyInscribed() {
   const results = await db.query.users.findMany({
@@ -21,25 +22,31 @@ export async function GetTopFiftyInscribed() {
     limit: 50,
   });
 
-  return results.map((user) => ({
-    ...user,
-    fuba: String(user.fuba),
-    rebirthData: user.rebirthData
-      ? {
-          rebirthCount: user.rebirthData.rebirthCount ?? 0,
-          ascensionCount: user.rebirthData.ascensionCount ?? 0,
-          transcendenceCount: user.rebirthData.transcendenceCount ?? 0,
-          furuborusCount: user.rebirthData.furuborusCount ?? 0,
-          celestialToken: user.rebirthData.celestialToken ?? 0,
-          hasUsedOneTimeMultiplier:
-            user.rebirthData.hasUsedOneTimeMultiplier ?? false,
-          usedCoupons: Array.isArray(user.rebirthData.usedCoupons)
-            ? user.rebirthData.usedCoupons
-            : [],
-          forus: user.rebirthData.forus ?? 0,
-        }
-      : null,
-  }));
+  return results.map((user) => {
+    const normalizedData = {
+      fuba: String(user.fuba),
+      rebirthData: user.rebirthData
+        ? {
+            rebirthCount: user.rebirthData.rebirthCount ?? 0,
+            ascensionCount: user.rebirthData.ascensionCount ?? 0,
+            transcendenceCount: user.rebirthData.transcendenceCount ?? 0,
+            furuborusCount: user.rebirthData.furuborusCount ?? 0,
+            celestialToken: user.rebirthData.celestialToken ?? 0,
+            hasUsedOneTimeMultiplier:
+              user.rebirthData.hasUsedOneTimeMultiplier ?? false,
+            usedCoupons: Array.isArray(user.rebirthData.usedCoupons)
+              ? user.rebirthData.usedCoupons
+              : [],
+            forus: user.rebirthData.forus ?? 0,
+          }
+        : null,
+      achievements: user.achievements ?? null,
+    };
+    return {
+      username: user.username,
+      data: obfuscate(normalizedData),
+    };
+  });
 }
 
 
