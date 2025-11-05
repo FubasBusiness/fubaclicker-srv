@@ -1,7 +1,7 @@
 import { User } from "../../db/schema/user";
 
 // xor-obfuscate.ts
-const KEY = "fuba_secret_key_2024";
+const KEY = Bun.env.FUBA;
 
 const enc = new TextEncoder();
 const dec = new TextDecoder();

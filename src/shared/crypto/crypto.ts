@@ -52,7 +52,7 @@ const userVerify = z.object({
 
 export function deobfuscate(data: string) {
   try {
-    const key = "fuba_secret_key_2024";
+    const key = Bun.env.FUBA;
     const keyBytes = new TextEncoder().encode(key);
     const dataBytes = base64ToUint8Array(data);
     const result = new Uint8Array(dataBytes.length);
