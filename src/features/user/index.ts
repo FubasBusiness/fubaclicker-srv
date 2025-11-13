@@ -63,6 +63,7 @@ export const userController = new Elysia()
             achievements: userData.achievements ?? undefined,
             achievementStats: userData.achievementsStats ?? undefined,
             upgrades: userData.upgrades ?? undefined,
+            profile: userData.profile ?? undefined,
           };
           const obfuscatedData = obfuscate(normalizedData);
           return { data: obfuscatedData };
