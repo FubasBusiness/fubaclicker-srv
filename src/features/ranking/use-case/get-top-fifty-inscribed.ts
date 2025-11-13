@@ -10,6 +10,7 @@ export async function GetTopFiftyInscribed() {
       rebirthData: true,
       achievements: true,
       fuba: true,
+      profile: true,
     },
     where: eq(users.inscribed, true),
     orderBy: (users) => [
@@ -41,6 +42,7 @@ export async function GetTopFiftyInscribed() {
           }
         : null,
       achievements: user.achievements ?? null,
+      profile: user.profile ?? null,
     };
     return {
       username: user.username,

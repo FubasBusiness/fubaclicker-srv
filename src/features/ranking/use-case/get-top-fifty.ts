@@ -9,6 +9,7 @@ export async function GetTopFifty() {
       rebirthData: true,
       achievements: true,
       fuba: true,
+      profile: true,
     },
     orderBy: (users) => [
       sql`COALESCE((${users.rebirthData} ->> 'furuborusCount')::int, 0) DESC`,
@@ -39,6 +40,7 @@ export async function GetTopFifty() {
           }
         : null,
       achievements: user.achievements ?? null,
+      profile: user.profile ?? null,
     };
     return {
       username: user.username,
