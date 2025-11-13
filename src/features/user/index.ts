@@ -43,6 +43,7 @@ export const userController = new Elysia()
           if (!result[0]) throw new NotFoundError("User not found");
           const userData = result[0];
           const normalizedData = {
+            username: userData.username,
             fuba: userData.fuba,
             generators: userData.generators ?? undefined,
             inventory: userData.inventory ?? undefined,
