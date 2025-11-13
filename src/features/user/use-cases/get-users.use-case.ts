@@ -18,6 +18,7 @@ export async function GetUser(userId: number) {
         achievements: users.achievements,
         achievementsStats: users.achievementsStats,
         upgrades: users.upgrades,
+        profile: users.profile,
       })
       .from(users)
       .where(eq(users.id, userId))
