@@ -48,6 +48,11 @@ const userVerify = z.object({
   achievements: z.array(z.string()).optional(),
   achievementStats: z.record(z.string(), z.number()).optional(),
   upgrades: z.record(z.string(), z.number()).optional(),
+  profile: z
+    .object({
+      profilePicture: z.string(),
+    })
+    .optional(),
 });
 
 export function deobfuscate(data: string) {
@@ -64,12 +69,13 @@ export function deobfuscate(data: string) {
     const decoded = new TextDecoder().decode(result);
     const obj = JSON.parse(decoded);
     const parsed = userVerify.parse(obj) as Partial<User>;
-    
+
     if (parsed.rebirthData) {
-      parsed.rebirthData.furuborusCount = parsed.rebirthData.furuborusCount ?? 0;
+      parsed.rebirthData.furuborusCount =
+        parsed.rebirthData.furuborusCount ?? 0;
       parsed.rebirthData.forus = parsed.rebirthData.forus ?? 0;
     }
-    
+
     logger.info("Parsed user:", parsed);
     return { userData: parsed, errorMessage: null };
   } catch (e) {

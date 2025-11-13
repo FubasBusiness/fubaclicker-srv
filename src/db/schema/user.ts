@@ -33,6 +33,10 @@ export interface User {
   upgrades: Upgrades;
 }
 
+export interface Profile {
+  profilePicture: string;
+}
+
 export const users = t.pgTable(
   "users",
   {
@@ -48,6 +52,7 @@ export const users = t.pgTable(
     achievements: t.varchar("achievements").array(),
     achievementsStats: t.jsonb("achievements_stats").$type<AchievementStats>(),
     upgrades: t.jsonb("upgrades").$type<Upgrades>(),
+    profile: t.jsonb("profile").$type<Profile>(),
     ip: t.varchar("ip"),
     inscribed: t.boolean("inscribed").default(false).notNull(),
   },
