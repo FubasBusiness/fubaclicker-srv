@@ -28,6 +28,27 @@ const app = new Elysia()
       case "InvalidCredentials":
         set.status = 401;
         return { error: error.message };
+      case "DrizzleQueryError":
+        if (error instanceof DrizzleQueryError) {
+          logger.error("Database query error", {
+            message: error.message,
+            cause: error.cause,
+            causeMessage: error.cause?.message,
+            causeCode: (error.cause as any)?.code,
+            causeDetail: (error.cause as any)?.detail,
+          });
+        }
+        set.status = 500;
+        return { error: "Database error" };
+      case "DrizzleError":
+        if (error instanceof DrizzleError) {
+          logger.error("Database error", {
+            message: error.message,
+            cause: error.cause,
+          });
+        }
+        set.status = 500;
+        return { error: "Database error" };
       default:
         logger.error("Unhandled error", error);
         if (error instanceof Error) {
