@@ -36,6 +36,13 @@
       "when": 1763006968118,
       "tag": "0004_created_profile_field_to_user_table",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1764000000000,
+      "tag": "0005_added_potion_and_cauldron_fields",
+      "breakpoints": true
     }
   ]
 }
