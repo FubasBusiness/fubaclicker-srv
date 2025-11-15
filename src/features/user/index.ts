@@ -13,8 +13,9 @@ const RebirthDataType = t.Object({
   furuborusCount: t.Number(),
   celestialToken: t.Number(),
   hasUsedOneTimeMultiplier: t.Boolean(),
-  usedCupons: t.Array(t.String()),
+  usedCoupons: t.Array(t.String()),
   forus: t.Number(),
+  cauldronUnlocked: t.Boolean(),
 });
 
 export const userController = new Elysia()
@@ -42,31 +43,7 @@ export const userController = new Elysia()
           const result = await GetUser(userId);
           if (!result[0]) throw new NotFoundError("User not found");
           const userData = result[0];
-          const normalizedData = {
-            username: userData.username,
-            fuba: userData.fuba,
-            generators: userData.generators ?? undefined,
-            inventory: userData.inventory ?? undefined,
-            equipped: userData.equipped ?? undefined,
-            rebirthData: userData.rebirthData
-              ? {
-                  rebirthCount: userData.rebirthData.rebirthCount,
-                  ascensionCount: userData.rebirthData.ascensionCount,
-                  transcendenceCount: userData.rebirthData.transcendenceCount,
-                  furuborusCount: userData.rebirthData.furuborusCount,
-                  celestialToken: userData.rebirthData.celestialToken,
-                  hasUsedOneTimeMultiplier:
-                    userData.rebirthData.hasUsedOneTimeMultiplier,
-                  usedCoupons: userData.rebirthData.usedCupons,
-                  forus: userData.rebirthData.forus,
-                }
-              : undefined,
-            achievements: userData.achievements ?? undefined,
-            achievementStats: userData.achievementsStats ?? undefined,
-            upgrades: userData.upgrades ?? undefined,
-            profile: userData.profile ?? undefined,
-          };
-          const obfuscatedData = obfuscate(normalizedData);
+          const obfuscatedData = obfuscate(userData);
           return { data: obfuscatedData };
         },
         {
@@ -87,7 +64,12 @@ export const userController = new Elysia()
             return { error: errorMessage };
           }
           await UpdateUser(userId, userData);
+          const result = await GetUser(userId);
+          if (!result[0]) throw new NotFoundError("User not found");
+          const updatedUserData = result[0];
+          const obfuscatedData = obfuscate(updatedUserData);
           set.status = 200;
+          return { data: obfuscatedData };
         },
         {
           auth: true,
@@ -97,7 +79,9 @@ export const userController = new Elysia()
           }),
           tags: ["user"],
           response: {
-            200: t.Void(),
+            200: t.Object({
+              data: t.String(),
+            }),
             400: t.Object({ error: t.Nullable(t.String()) }),
           },
         },

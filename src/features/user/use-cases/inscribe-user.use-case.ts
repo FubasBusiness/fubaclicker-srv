@@ -15,9 +15,14 @@ export async function InscribeUser(userId: number) {
       achievements: null,
       achievementsStats: null,
       upgrades: null,
+      cauldron: null,
+      activePotionEffects: null,
+      activePotionCount: null,
+      permanentPotionMultiplier: null,
     })
     .where(eq(users.id, userId));
 }
+
 
 
 

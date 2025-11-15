@@ -19,12 +19,20 @@ export async function GetUser(userId: number) {
         achievementsStats: users.achievementsStats,
         upgrades: users.upgrades,
         profile: users.profile,
+        inscribed: users.inscribed,
+        cauldron: users.cauldron,
+        activePotionEffects: users.activePotionEffects,
+        permanentPotionMultiplier: users.permanentPotionMultiplier,
+        activePotionCount: users.activePotionCount,
       })
       .from(users)
       .where(eq(users.id, userId))
   ).map((u) => ({
-    ...u,
+    username: u.username,
     fuba: String(u.fuba),
+    generators: u.generators ?? [],
+    inventory: u.inventory ?? {},
+    equipped: u.equipped ?? [],
     rebirthData: u.rebirthData
       ? {
           rebirthCount: u.rebirthData.rebirthCount ?? 0,
@@ -34,11 +42,23 @@ export async function GetUser(userId: number) {
           celestialToken: u.rebirthData.celestialToken ?? 0,
           hasUsedOneTimeMultiplier:
             u.rebirthData.hasUsedOneTimeMultiplier ?? false,
-          usedCupons: Array.isArray(u.rebirthData.usedCoupons)
+          usedCoupons: Array.isArray(u.rebirthData.usedCoupons)
             ? u.rebirthData.usedCoupons
             : (Array.from(u.rebirthData.usedCoupons ?? []) as string[]),
           forus: u.rebirthData.forus ?? 0,
+          cauldronUnlocked: u.rebirthData.cauldronUnlocked ?? false,
         }
       : null,
+    achievements: u.achievements ?? [],
+    achievementStats: u.achievementsStats ?? {},
+    upgrades: u.upgrades ?? {},
+    cauldron: u.cauldron ?? {},
+    activePotionEffects: u.activePotionEffects ?? [],
+    permanentPotionMultiplier: u.permanentPotionMultiplier
+      ? Number(u.permanentPotionMultiplier)
+      : 1.0,
+    activePotionCount: u.activePotionCount ?? {},
+    profile: u.profile ?? null,
+    inscribed: u.inscribed ?? false,
   }));
 }
